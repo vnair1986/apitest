@@ -15,21 +15,21 @@ import utils.Constants;
 public class ProductAPITest {
 
 	public Integer productCode = null;
-	public Integer price = null;
+	public Float price = null;
 	public Integer productName = null;
 
 	@Test(priority = 1)
 	public void createProduct() {
 		Response response = given().contentType(ContentType.JSON).accept(ContentType.JSON)
-				.body("{\"name\": \"Rose\",\"price\": 9.25}").when().post(Constants.BASE_URI + "v1/product");
-		Assert.assertEquals(response.getStatusCode(), 200);
+				.body("{\"name\": \"Rose\",\"price\": 9.25}").when().post(Constants.BASE_URI + Constants.API_VERSION + "/product");
+		Assert.assertEquals(response.getStatusCode(), 200); // Here status code should be 201 but it is returning me as 200. Also no content is returned 
 
 	}
 
 	@Test(priority = 2)
 	public void getProducts() {
 		Response response = given().contentType(ContentType.JSON).accept(ContentType.JSON).when()
-				.get(Constants.BASE_URI + "v1/products");
+				.get(Constants.BASE_URI + Constants.API_VERSION + "/products");
 		Assert.assertEquals(response.getStatusCode(), 200);
 		JSONArray jsonArray = new JSONArray(response.getBody().asString());
 
@@ -41,7 +41,7 @@ public class ProductAPITest {
 			if (productName.equalsIgnoreCase("Rose")) {
 				productCode = objectInArray.getInt("id");
 				Assert.assertNotNull(productCode);
-				price = objectInArray.getInt("price");
+				price = objectInArray.getFloat("price");
 				Assert.assertNotNull(price);
 
 			}
@@ -54,7 +54,7 @@ public class ProductAPITest {
 	public void updateProduct() {
 		Response response = given().contentType(ContentType.JSON).accept(ContentType.JSON)
 				.body("{\"name\": \"Rose\",\"price\": 10.25}").when()
-				.put(Constants.BASE_URI + "v1/product/" + productCode);
+				.put(Constants.BASE_URI + Constants.API_VERSION +"/product/" + productCode);
 		Assert.assertEquals(response.getStatusCode(), 200);
 
 	}
@@ -62,7 +62,7 @@ public class ProductAPITest {
 	@Test(priority = 4)
 	public void getProduct() {
 		Response response = given().contentType(ContentType.JSON).accept(ContentType.JSON).when()
-				.get(Constants.BASE_URI + "v1/product/" + productCode);
+				.get(Constants.BASE_URI + Constants.API_VERSION +"/product/" + productCode);
 		Assert.assertEquals(response.getStatusCode(), 200);
 		response.then().body("name", Matchers.is("Rose"));
 		response.then().body("price", Matchers.is("10.25"));
@@ -71,14 +71,14 @@ public class ProductAPITest {
 	@Test(priority = 5)
 	public void deleteProduct() {
 		Response response = given().contentType(ContentType.JSON).accept(ContentType.JSON).when()
-				.delete(Constants.BASE_URI + "v1/product/" + productCode);
+				.delete(Constants.BASE_URI + Constants.API_VERSION + "/product/" + productCode);
 		Assert.assertEquals(response.getStatusCode(), 200);
 	}
 
 	@Test(priority = 6)
 	public void verifyDeletedProduct() {
 		Response response = given().contentType(ContentType.JSON).accept(ContentType.JSON).when()
-				.get(Constants.BASE_URI + "v1/product/" + productCode);
+				.get(Constants.BASE_URI + Constants.API_VERSION + "/product/" + productCode);
 		Assert.assertEquals(response.getStatusCode(), 404);
 	}
 
