@@ -76,7 +76,7 @@ public class ProductAPITest {
 	}
 
 	@Test(priority = 6)
-	public void getVerifyDeletedProduct() {
+	public void verifyDeletedProduct() {
 		Response response = given().contentType(ContentType.JSON).accept(ContentType.JSON).when()
 				.get(Constants.BASE_URI + "v1/product/" + productCode);
 		Assert.assertEquals(response.getStatusCode(), 404);
